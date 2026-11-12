@@ -1,0 +1,111 @@
+/* @rodichub/notifications-and-alerts — the drawer and the toasts.
+   Every colour is a custom property, so an app maps them onto its own tokens:
+     :root { --nna-brand: hsl(var(--brand-600)); --nna-surface: hsl(var(--surface-raised)); }
+   Defaults follow the AIPMS v8 palette (light; `.dark` on an ancestor for dark). */
+:root {
+  --nna-surface: #ffffff;
+  --nna-surface-alt: #f5f6fa;
+  --nna-line: #e7e7ea;
+  --nna-text: #111111;
+  --nna-body: #3f3f46;
+  --nna-muted: #626b7f;
+  --nna-brand: #cb5510;
+  --nna-brand-soft: #fff4ed;
+  --nna-info: #175cd3;
+  --nna-success: #067647;
+  --nna-warning: #b54708;
+  --nna-danger: #d92d20;
+  --nna-shadow: 0 12px 32px rgba(15, 18, 26, 0.16);
+  --nna-font: inherit;
+  --nna-z: 60;
+}
+.dark {
+  --nna-surface: #15161a;
+  --nna-surface-alt: #0c0d10;
+  --nna-line: #26272d;
+  --nna-text: #f4f4f5;
+  --nna-body: #d4d4d8;
+  --nna-muted: #9a9daa;
+  --nna-brand: #e8692a;
+  --nna-brand-soft: #2a1910;
+  --nna-info: #84adff;
+  --nna-success: #47cd89;
+  --nna-warning: #f5a524;
+  --nna-danger: #f97066;
+  --nna-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.nna-layer { position: fixed; inset: 0; z-index: var(--nna-z); font-family: var(--nna-font); }
+.nna-backdrop { position: absolute; inset: 0; background: rgba(0, 0, 0, 0.18); }
+.nna-drawer {
+  position: absolute; top: 0; right: 0; bottom: 0; width: min(400px, 100vw);
+  display: flex; flex-direction: column; background: var(--nna-surface);
+  border-left: 1px solid var(--nna-line); box-shadow: var(--nna-shadow);
+  animation: nna-slide 160ms ease-out;
+}
+@keyframes nna-slide { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.nna-drawer-head {
+  display: flex; align-items: center; gap: 10px; padding: 16px 16px 14px;
+  border-bottom: 1px solid var(--nna-line);
+}
+.nna-drawer-title { margin: 0; font-size: 16px; font-weight: 600; color: var(--nna-text); }
+.nna-count {
+  padding: 2px 8px; border-radius: 999px; font-size: 11px; font-weight: 600;
+  background: var(--nna-brand-soft); color: var(--nna-brand);
+}
+.nna-spacer { flex: 1; }
+.nna-link {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-size: 12.5px; font-weight: 600; color: var(--nna-brand);
+}
+.nna-icon-button {
+  border: 0; background: none; cursor: pointer; width: 28px; height: 28px; border-radius: 8px;
+  font-size: 18px; line-height: 1; color: var(--nna-muted);
+}
+.nna-icon-button:hover { background: var(--nna-surface-alt); color: var(--nna-text); }
+.nna-list { flex: 1; overflow-y: auto; padding: 6px 0; }
+.nna-empty { margin: 32px 20px; text-align: center; font-size: 13px; color: var(--nna-muted); }
+.nna-item { display: flex; align-items: flex-start; gap: 4px; padding: 0 8px 0 0; border-bottom: 1px solid var(--nna-line); }
+.nna-item:last-of-type { border-bottom: 0; }
+.nna-unread { background: var(--nna-brand-soft); }
+.nna-item-main, .nna-toast-main {
+  flex: 1; display: flex; gap: 10px; min-width: 0; text-align: left; cursor: pointer;
+  border: 0; background: none; padding: 12px 8px 12px 16px; font: inherit; color: inherit;
+}
+.nna-toast-main { padding: 0; flex-direction: column; gap: 2px; }
+.nna-item-text { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.nna-item-title { font-size: 13.5px; font-weight: 600; color: var(--nna-text); }
+.nna-item-body {
+  font-size: 12.5px; line-height: 18px; color: var(--nna-body);
+  display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+}
+.nna-item-meta { font-size: 11.5px; color: var(--nna-muted); }
+.nna-dismiss { margin-top: 8px; opacity: 0.6; }
+.nna-item:hover .nna-dismiss { opacity: 1; }
+.nna-more {
+  display: block; margin: 10px auto 14px; padding: 7px 14px; cursor: pointer; border-radius: 10px;
+  border: 1px solid var(--nna-line); background: var(--nna-surface); color: var(--nna-text); font: inherit; font-size: 12.5px;
+}
+.nna-dot { flex: none; width: 8px; height: 8px; margin-top: 6px; border-radius: 999px; background: var(--nna-info); }
+.nna-info { background: var(--nna-info); }
+.nna-success { background: var(--nna-success); }
+.nna-warning { background: var(--nna-warning); }
+.nna-danger { background: var(--nna-danger); }
+
+.nna-toasts {
+  position: fixed; right: 20px; bottom: 20px; z-index: var(--nna-z);
+  display: flex; flex-direction: column; gap: 10px; width: min(360px, calc(100vw - 40px));
+  font-family: var(--nna-font);
+}
+.nna-toast {
+  display: flex; align-items: flex-start; gap: 10px; padding: 12px 8px 12px 14px;
+  background: var(--nna-surface); border: 1px solid var(--nna-line); border-radius: 14px;
+  box-shadow: var(--nna-shadow); animation: nna-pop 180ms ease-out;
+}
+.nna-toast-warning { border-left: 3px solid var(--nna-warning); }
+.nna-toast-danger { border-left: 3px solid var(--nna-danger); }
+@keyframes nna-pop { from { transform: translateY(8px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .nna-drawer, .nna-toast { animation: none; }
+}

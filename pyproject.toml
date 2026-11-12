@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "notifications-and-alerts"
+version = "0.1.0"
+description = "AIPMS notifications & alerts: email (to/cc/bcc, attachments), in-app notifications, and scheduled reminders, as one library every module can import."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "sqlalchemy>=2.0",
+    "httpx>=0.27",
+    "tzdata>=2024.1",   # zoneinfo on hosts without a system time-zone database
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.109"]
+postgres = ["psycopg2-binary>=2.9"]
+test = ["pytest>=8", "fastapi>=0.109"]
+
+[project.scripts]
+notifications-worker = "notifications_and_alerts.worker:main"
+
+[tool.setuptools.packages.find]
+include = ["notifications_and_alerts*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
